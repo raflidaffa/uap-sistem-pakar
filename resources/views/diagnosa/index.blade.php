@@ -10,11 +10,10 @@
     <!-- Navbar -->
     <nav class="bg-blue-600 shadow-md">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="#" class="text-white text-lg font-bold">Sistem Pakar Diagnosa Sapi</a>
+            <a href="#" class="text-white text-lg font-bold">Sistem Pakar Diagnosa Penyakit Sapi</a>
             <div>
-                <a href="#" class="text-white hover:text-blue-200 mx-2">Home</a>
-                <a href="#" class="text-white hover:text-blue-200 mx-2">About</a>
-                <a href="#" class="text-white hover:text-blue-200 mx-2">Contact</a>
+                <a href="/beranda" class="text-white hover:text-blue-200 mx-2">Beranda</a>
+                <a href="/diagnosa" class="text-white hover:text-blue-200 mx-2">Diagnosa</a>
             </div>
         </div>
     </nav>
@@ -43,7 +42,6 @@
     <!-- Footer -->
     <footer class="bg-blue-600 text-white py-4 mt-10">
         <div class="container mx-auto text-center">
-            <p>&copy; 2024 Sistem Pakar Diagnosa Sapi. All rights reserved.</p>
         </div>
     </footer>
 </body>
