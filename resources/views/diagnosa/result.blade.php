@@ -13,7 +13,7 @@
                 <div class="text-center">
                     <h1 class="text-2xl font-semibold text-green-600 mb-4">Hasil Diagnosa</h1>
                     <p class="text-lg mb-4">Penyakit yang terdeteksi berdasarkan gejala yang diberikan:</p>
-                    
+
                     <!-- Tabel Hasil Diagnosa -->
                     <table class="table-auto w-full text-left border-collapse border border-gray-300 mb-4">
                         <thead>
@@ -32,15 +32,13 @@
                         </tbody>
                     </table>
 
-                    <!-- Informasi Penyakit dengan CF Tertinggi -->
-                    <h2 class="text-xl font-bold text-gray-900 mt-4">
-                        {{ $penyakitScores[0]['penyakit']->jenis_penyakit }}
-                    </h2>
-                    <h3 class="text-lg font-semibold text-gray-700 mt-4">Rekomendasi:</h3>
-                    <p class="text-md text-gray-600">
-                        {{ $rekomendasi }}
-                    </p>
+            <!-- Informasi Penyakit dengan CF Tertinggi -->
+            @foreach($rekomendasiList as $item)
+                <div class="mt-4">
+                    <h3 class="text-lg font-semibold text-gray-700">{{ $item['penyakit'] }}</h3>
+                    <p class="text-md text-gray-600">{{ $item['rekomendasi'] }}</p>
                 </div>
+            @endforeach
             @else
                 <div class="text-center">
                     <h1 class="text-2xl font-semibold text-red-600 mb-4">Hasil Diagnosa</h1>

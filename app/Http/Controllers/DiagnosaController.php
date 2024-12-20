@@ -16,43 +16,54 @@ class DiagnosaController extends Controller
     }
 
     public function diagnosa(Request $request)
-    {
-        $inputGejala = $request->input('gejala');
-        $rules = Rule::all();
-        $penyakitScores = [];
-        $rekomendasi = null;
-    
-        foreach ($rules as $rule) {
-            $ruleGejala = json_decode($rule->kode_gejala, true);
-            $jumlahTotalGejala = count($ruleGejala);
-            $jumlahCocok = count(array_intersect($inputGejala, $ruleGejala));
-    
-            if ($jumlahCocok > 0) {
-                // Hitung nilai CF: jumlah gejala cocok / total gejala dalam rule
-                $cf = $jumlahCocok / $jumlahTotalGejala;
-    
-                // Simpan nilai CF terbesar untuk setiap penyakit
-                if (!isset($penyakitScores[$rule->penyakit_id]) || $cf > $penyakitScores[$rule->penyakit_id]['cf']) {
-                    $penyakitScores[$rule->penyakit_id] = [
-                        'penyakit' => Penyakit::find($rule->penyakit_id),
-                        'cf' => $cf * 100, // Konversi ke persentase
-                    ];
-                }
+{
+    $inputGejala = $request->input('gejala');
+    $rules = Rule::all();
+    $penyakitScores = [];
+
+    foreach ($rules as $rule) {
+        $ruleGejala = json_decode($rule->kode_gejala, true);
+        $jumlahTotalGejala = count($ruleGejala);
+        $jumlahCocok = count(array_intersect($inputGejala, $ruleGejala));
+
+        if ($jumlahCocok > 0) {
+            // Hitung nilai CF: jumlah gejala cocok / total gejala dalam rule
+            $cf = $jumlahCocok / $jumlahTotalGejala;
+
+            // Simpan nilai CF terbesar untuk setiap penyakit
+            if (!isset($penyakitScores[$rule->penyakit_id]) || $cf > $penyakitScores[$rule->penyakit_id]['cf']) {
+                $penyakitScores[$rule->penyakit_id] = [
+                    'penyakit' => Penyakit::find($rule->penyakit_id),
+                    'cf' => $cf * 100, // Konversi ke persentase
+                ];
             }
         }
-    
+    }
+
         // Urutkan hasil diagnosa berdasarkan nilai CF (desc)
         usort($penyakitScores, function ($a, $b) {
             return $b['cf'] <=> $a['cf'];
         });
-    
-        // Ambil rekomendasi untuk penyakit dengan CF tertinggi
-        if (!empty($penyakitScores)) {
-            $rekomendasi = $this->getRekomendasi($penyakitScores[0]['penyakit']);
+
+        // Ambil nilai CF tertinggi
+        $nilaiCFTertinggi = !empty($penyakitScores) ? $penyakitScores[0]['cf'] : null;
+
+        // Ambil semua penyakit dengan nilai CF tertinggi
+        $penyakitTertinggi = array_filter($penyakitScores, function ($score) use ($nilaiCFTertinggi) {
+            return $score['cf'] === $nilaiCFTertinggi;
+        });
+
+        // Ambil rekomendasi untuk setiap penyakit dengan CF tertinggi
+        $rekomendasiList = [];
+        foreach ($penyakitTertinggi as $score) {
+            $rekomendasiList[] = [
+                'penyakit' => $score['penyakit']->jenis_penyakit,
+                'rekomendasi' => $this->getRekomendasi($score['penyakit'])
+            ];
         }
-    
-        return view('diagnosa.result', compact('penyakitScores', 'rekomendasi'));
-    }       
+
+        return view('diagnosa.result', compact('penyakitScores', 'rekomendasiList'));
+    }
 
     private function getRekomendasi($penyakit)
     {
@@ -97,7 +108,7 @@ class DiagnosaController extends Controller
         $gejalas = Gejala::all();
         $penyakits = Penyakit::all();
         $rules = Rule::with('penyakit')->get(); // Pastikan relasi antara Rule dan Penyakit sudah ada
-    
+
         return view('data.index', compact('gejalas', 'penyakits', 'rules'));
-    }    
+    }
 }
