@@ -1,7 +1,9 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DiagnosaController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +22,5 @@ Route::get('/', function () {
 
 Route::get('/diagnosa', [DiagnosaController::class, 'index'])->name('diagnosa.index');
 Route::post('/diagnosa', [DiagnosaController::class, 'diagnosa'])->name('diagnosa.proses');
+Route::get('/beranda', [HomeController::class, 'index'])->name('beranda.index');
+Route::get('/data', [DiagnosaController::class, 'dataIndex'])->name('data.index');
