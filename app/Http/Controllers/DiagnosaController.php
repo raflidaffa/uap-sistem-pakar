@@ -17,6 +17,14 @@ class DiagnosaController extends Controller
 
     public function diagnosa(Request $request)
 {
+    // Validasi jika tidak ada gejala yang dipilih
+    $request->validate([
+        'gejala' => 'required|array|min:1',
+    ], [
+        'gejala.required' => 'Silakan pilih setidaknya satu gejala.',
+        'gejala.min' => 'Silakan pilih setidaknya satu gejala.',
+    ]);
+
     $inputGejala = $request->input('gejala');
     $rules = Rule::all();
     $penyakitScores = [];

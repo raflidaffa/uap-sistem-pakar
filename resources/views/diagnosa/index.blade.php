@@ -103,6 +103,12 @@
     <div class="container mx-auto px-4 py-10">
         <div class="card">
             <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">Pilih Gejala yang Dialami</h1>
+
+            <!-- Menampilkan pesan error jika ada -->
+            @if ($errors->has('gejala'))
+                <p class="text-red-500 text-center font-medium">{{ $errors->first('gejala') }}</p>
+            @endif
+            
             <form action="{{ route('diagnosa.proses') }}" method="POST">
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
